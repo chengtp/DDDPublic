@@ -1,16 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using DDD.Util.Selection;
 
 namespace DDD.Util.Upload
 {
     /// <summary>
-    /// Upload Option
+    /// Upload option
     /// </summary>
+    [Serializable]
     public class UploadOption
     {
         /// <summary>
-        /// remote upload
+        /// remote selection provider
+        /// </summary>
+        DataSelectionProvider<RemoteServerOption> remoteSelectionProvider = null;
+
+        /// <summary>
+        /// remote server options
+        /// </summary>
+        List<RemoteServerOption> remoteServerOptions = null;
+
+        /// <summary>
+        /// Gets or sets whether to use remote upload
         /// </summary>
         public bool Remote
         {
@@ -18,7 +29,7 @@ namespace DDD.Util.Upload
         }
 
         /// <summary>
-        /// save path
+        /// Gets or sets file save path
         /// </summary>
         public string SavePath
         {
@@ -26,7 +37,8 @@ namespace DDD.Util.Upload
         }
 
         /// <summary>
-        /// save to content root folder
+        /// Gets or sets whether save to content root folder
+        /// default is true
         /// </summary>
         public bool SaveToContentRoot
         {
@@ -34,60 +46,55 @@ namespace DDD.Util.Upload
         } = true;
 
         /// <summary>
-        /// content root folder path
+        /// Gets or sets upload content root folder path
+        /// default value is 'wwwroot'
         /// </summary>
         public string ContentRootPath
         {
             get; set;
-        } = "wwwroot";
+        } = UploadManager.DefaultContentFolder;
 
         /// <summary>
-        /// remote configs
+        /// Gets or sets remote configs
         /// </summary>
-        public List<RemoteOption> RemoteConfigs
+        public List<RemoteServerOption> RemoteConfigurations
         {
-            get; set;
+            get
+            {
+                return remoteServerOptions;
+            }
+            set
+            {
+                remoteServerOptions = value;
+                remoteSelectionProvider = new DataSelectionProvider<RemoteServerOption>(remoteServerOptions);
+            }
         }
 
         /// <summary>
-        /// upload server choice pattern
+        /// Gets or sets upload server choice pattern
+        /// default value is 'Random' pattern
         /// </summary>
-        public RemoteServerChoicePattern RemoteServerChoicePattern
+        public SelectMatchMode RemoteServerChoicePattern
         {
             get; set;
-        } = RemoteServerChoicePattern.Random;
+        } = SelectMatchMode.EquiprobableRandom;
 
         /// <summary>
-        /// get remote option
+        /// Gets remote option
         /// </summary>
         /// <returns></returns>
-        public RemoteOption GetRemoteOption()
+        public RemoteServerOption GetRemoteOption()
         {
-            if (RemoteConfigs == null || RemoteConfigs.Count <= 0)
+            if (RemoteConfigurations.IsNullOrEmpty())
             {
                 return null;
             }
-            int serverCount = RemoteConfigs.Count;
+            int serverCount = RemoteConfigurations.Count;
             if (serverCount == 1)
             {
-                return RemoteConfigs[0];
+                return RemoteConfigurations[0];
             }
-            RemoteOption remoteOption = null;
-            switch (RemoteServerChoicePattern)
-            {
-                case RemoteServerChoicePattern.First:
-                    remoteOption = RemoteConfigs[0];
-                    break;
-                case RemoteServerChoicePattern.Latest:
-                    remoteOption = RemoteConfigs[RemoteConfigs.Count - 1];
-                    break;
-                default:
-                    var random = new Random();
-                    int ranIndex = random.Next(0, serverCount);
-                    remoteOption = RemoteConfigs[ranIndex];
-                    break;
-            }
-            return remoteOption;
+            return remoteSelectionProvider.Get(RemoteServerChoicePattern);
         }
     }
 }

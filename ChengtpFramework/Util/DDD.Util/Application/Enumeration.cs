@@ -1,32 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DDD.Util.Application
 {
     /// <summary>
-    /// Application Type
+    /// Defines application type
     /// </summary>
+    [Serializable]
     public enum ApplicationType
     {
         WebSite = 110,
         WebAPI = 120,
-        WinService = 130,
+        WindowsService = 130,
         Console = 140,
-        WinForm = 150,
-        AppService = 160
+        WindowsForm = 150,
+        ApplicationService = 160
     }
 
     /// <summary>
-    /// Application Status
+    /// Defines application status
     /// </summary>
+    [Serializable]
     public enum ApplicationStatus
     {
-        ready = 200,
-        starting = 205,
-        running = 210,
-        paused = 215,
-        stoped = 220,
-        closed = 225
+        Ready = 200,
+        Starting = 205,
+        Running = 210,
+        Paused = 215,
+        Stoped = 220,
+        Closed = 225
     }
 }

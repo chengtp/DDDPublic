@@ -1,4 +1,4 @@
-﻿namespace Dapper
+﻿namespace DDD.Util.Dapper
 {
     public static partial class SqlMapper
     {

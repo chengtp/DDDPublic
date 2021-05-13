@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Dapper
+namespace DDD.Util.Dapper
 {
     internal static class TypeExtensions
     {

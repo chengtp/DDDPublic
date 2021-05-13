@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDD.Util.ValueType
 {
     /// <summary>
-    /// contact data type
+    /// Contact data type
     /// </summary>
     [Serializable]
     public struct Contact
     {
-        #region constructor
+        #region Constructor
 
         /// <summary>
-        /// instance a Contact object
+        /// Initializes a new instance of the DDD.Util.ValueType.Contact
         /// </summary>
         /// <param name="phone">phone</param>
         /// <param name="mobile">mobile</param>
@@ -37,78 +33,79 @@ namespace DDD.Util.ValueType
 
         #endregion
 
-        #region Propertys
+        #region Properties
 
         /// <summary>
-        /// Phone
+        /// Gets phone
         /// </summary>
-        public string Phone { get; private set; }
+        public string Phone { get; }
 
         /// <summary>
-        /// Mobile
+        /// Gets mobile
         /// </summary>
-        public string Mobile { get; private set; }
+        public string Mobile { get; }
 
         /// <summary>
-        /// Email
+        /// Gets email
         /// </summary>
-        public string Email { get; private set; }
+        public string Email { get; }
 
         /// <summary>
-        /// QQ
+        /// Gets QQ
         /// </summary>
-        public string QQ { get; private set; }
+        public string QQ { get; }
 
         /// <summary>
-        /// MSN
+        /// Gets MSN
         /// </summary>
-        public string MSN { get; private set; }
+        public string MSN { get; }
 
         /// <summary>
-        /// WeChat
+        /// Gets WeChat
         /// </summary>
-        public string WeChat { get; private set; }
+        public string WeChat { get; }
 
         /// <summary>
-        /// WeiBo
+        /// Gets WeiBo
         /// </summary>
-        public string WeiBo { get; private set; }
+        public string WeiBo { get; }
 
         #endregion
 
-        #region static methods
+        #region Methods
 
         /// <summary>
-        /// compare two contact objects whether is equal
+        /// Compare two contact objects whether is equal
         /// </summary>
-        /// <param name="contactOne">first contact</param>
-        /// <param name="contactTwo">second contact</param>
-        /// <returns>whether is equal</returns>
-        public static bool Equals(Contact contactOne, Contact contactTwo)
+        /// <param name="contactOne">First contact</param>
+        /// <param name="contactTwo">Second contact</param>
+        /// <param name="comparison">String comparison</param>
+        /// <returns>Whether is equal</returns>
+        public static bool Equals(Contact contactOne, Contact contactTwo, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
-            return contactOne.Email == contactTwo.Email &&
-                contactOne.Mobile == contactTwo.Mobile &&
-                contactOne.MSN == contactTwo.MSN &&
-                contactOne.Phone == contactTwo.Phone &&
-                contactOne.QQ == contactTwo.QQ &&
-                contactOne.WeChat == contactTwo.WeChat &&
-                contactOne.WeiBo == contactTwo.WeiBo;
-
+            return contactOne.Email.Equals(contactTwo.Email, comparison)
+                && contactOne.Mobile.Equals(contactTwo.Mobile, comparison)
+                && contactOne.MSN.Equals(contactTwo.MSN, comparison)
+                && contactOne.Phone.Equals(contactTwo.Phone, comparison)
+                && contactOne.QQ.Equals(contactTwo.QQ, comparison)
+                && contactOne.WeChat.Equals(contactTwo.WeChat, comparison)
+                && contactOne.WeiBo.Equals(contactTwo.WeiBo, comparison);
         }
 
-        #endregion
-
-        #region methods
+        /// <summary>
+        /// Override equals method
+        /// </summary>
+        /// <param name="data">Compare data</param>
+        /// <returns>Return whether is equal</returns>
+        public override bool Equals(object data)
+        {
+            return Equals(this, (Contact)data);
+        }
 
         /// <summary>
-        /// override equals method
+        /// Gets hash code
         /// </summary>
-        /// <param name="obj">compare object</param>
         /// <returns></returns>
-        public override bool Equals(object obj)
-        {
-            return Equals(this, (Contact)obj);
-        }
         public override int GetHashCode()
         {
             return 0;

@@ -1,25 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DDD.Util.Upload
 {
     /// <summary>
-    /// upload target
+    /// Defines the target to upload to
     /// </summary>
+    [Serializable]
     public enum UploadTarget
     {
+        /// <summary>
+        /// Upload file to local
+        /// </summary>
         Local = 2,
+        /// <summary>
+        /// Upload file to remote server
+        /// </summary>
         Remote = 4
-    }
-
-    /// <summary>
-    /// remote server choice pattern
-    /// </summary>
-    public enum RemoteServerChoicePattern
-    {
-        First = 2,
-        Latest = 4,
-        Random = 8
     }
 }

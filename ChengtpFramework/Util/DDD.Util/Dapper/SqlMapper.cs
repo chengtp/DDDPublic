@@ -18,7 +18,7 @@ using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Dapper
+namespace DDD.Util.Dapper
 {
     /// <summary>
     /// Dapper, a light weight object mapper for ADO.NET
@@ -348,7 +348,7 @@ namespace Dapper
         /// <param name="name">The name (for error messages).</param>
         /// <param name="demand">Whether to demand a value (throw if missing).</param>
         /// <param name="handler">The handler for <paramref name="type"/>.</param>
-        [Obsolete(ObsoleteInternalUsageOnly, false)]
+        //[Obsolete(ObsoleteInternalUsageOnly, false)]
         [Browsable(false)]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static DbType LookupDbType(Type type, string name, bool demand, out ITypeHandler handler)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 
-namespace Dapper
+namespace DDD.Util.Dapper
 {
     /// <summary>
     /// Handles variances in features per DBMS

@@ -1,25 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDD.Util.Upload
 {
     /// <summary>
-    /// upload file result
+    /// Upload file result
     /// </summary>
     [Serializable]
     public class UploadFileResult
     {
+        /// <summary>
+        /// relative path
+        /// </summary>
         string relativePath = string.Empty;
 
+        /// <summary>
+        /// full path
+        /// </summary>
         string fullPath = string.Empty;
 
-        #region Propertys 
+        #region Properties
 
         /// <summary>
-        /// file suffix
+        /// Gets or sets the file suffix
         /// </summary>
         public string Suffix
         {
@@ -28,7 +30,7 @@ namespace DDD.Util.Upload
         }
 
         /// <summary>
-        /// original file name
+        /// Gets or sets the original file name
         /// </summary>
         public string OriginalFileName
         {
@@ -36,7 +38,7 @@ namespace DDD.Util.Upload
         }
 
         /// <summary>
-        /// file name
+        /// Gets or sets the file name
         /// </summary>
         public string FileName
         {
@@ -45,7 +47,7 @@ namespace DDD.Util.Upload
         }
 
         /// <summary>
-        /// relative path
+        /// Gets or sets the relative path
         /// </summary>
         public string RelativePath
         {
@@ -60,7 +62,7 @@ namespace DDD.Util.Upload
         }
 
         /// <summary>
-        /// full path
+        /// Gets or sets the full path
         /// </summary>
         public string FullPath
         {
@@ -75,7 +77,7 @@ namespace DDD.Util.Upload
         }
 
         /// <summary>
-        /// upload date
+        /// Gets or sets the upload date
         /// </summary>
         public DateTimeOffset UploadDate
         {
@@ -83,7 +85,7 @@ namespace DDD.Util.Upload
         }
 
         /// <summary>
-        /// upload target
+        /// Gets or sets the upload location
         /// </summary>
         public UploadTarget Target
         {

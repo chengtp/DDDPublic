@@ -1,19 +1,18 @@
-﻿using DDD.Util.Extension;
-using DDD.Util.IoC;
-using DDD.Util.Net.Http;
-using DDD.Util.Serialize;
-using DDD.Util.Upload.Config;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using DDD.Util.Http;
+using DDD.Util.Serialize;
+using DDD.Util.Upload.Configuration;
+using Microsoft.Win32.SafeHandles;
 
 namespace DDD.Util.Upload
 {
     /// <summary>
-    /// upload manager
+    /// Upload manager
     /// </summary>
     public static class UploadManager
     {
@@ -25,7 +24,7 @@ namespace DDD.Util.Upload
             };
         }
 
-        #region properties
+        #region Properties
 
         /// <summary>
         /// default upload option
@@ -33,58 +32,63 @@ namespace DDD.Util.Upload
         static UploadOption Default = null;
 
         /// <summary>
-        /// upload object collection
+        /// Upload object configurations
         /// </summary>
-        public static Dictionary<string, UploadObject> UploadObjectCollection = new Dictionary<string, UploadObject>();
+        static readonly Dictionary<string, UploadObject> UploadObjectConfigurations = new Dictionary<string, UploadObject>();
+
+        /// <summary>
+        /// Gets or sets the default content folder
+        /// </summary>
+        public static string DefaultContentFolder { get; set; } = "wwwroot";
 
         #endregion
 
-        #region methods
+        #region Methods
 
-        #region config upload
+        #region Configure upload
 
         /// <summary>
-        /// config upload
+        /// Configure upload information
         /// </summary>
-        /// <param name="uploadConfig">upload config</param>
-        public static void ConfigUpload(UploadConfig uploadConfig)
+        /// <param name="uploadConfiguration">Upload configuration</param>
+        public static void Configure(UploadConfiguration uploadConfiguration)
         {
-            if (uploadConfig == null)
+            if (uploadConfiguration == null)
             {
                 return;
             }
-            if (uploadConfig.Default != null)
+            if (uploadConfiguration.Default != null)
             {
-                ConfigDefaultUpload(uploadConfig.Default);
+                ConfigureDefault(uploadConfiguration.Default);
             }
-            if (!uploadConfig.UploadObjects.IsNullOrEmpty())
+            if (!uploadConfiguration.UploadObjects.IsNullOrEmpty())
             {
-                ConfigUploadObject(uploadConfig.UploadObjects.ToArray());
+                ConfigureUploadObject(uploadConfiguration.UploadObjects.ToArray());
             }
         }
 
         #endregion
 
-        #region config default upload
+        #region Configure default upload
 
         /// <summary>
-        /// config default upload
+        /// Configure default upload option
         /// </summary>
-        /// <param name="uploadOption">upload option</param>
-        public static void ConfigDefaultUpload(UploadOption uploadOption)
+        /// <param name="uploadOption">Upload option</param>
+        public static void ConfigureDefault(UploadOption uploadOption)
         {
             Default = uploadOption;
         }
 
         #endregion
 
-        #region config upload object
+        #region Configure upload object
 
         /// <summary>
-        /// config upload object
+        /// Configure upload object
         /// </summary>
-        /// <param name="uploadObjects">upload objects</param>
-        public static void ConfigUploadObject(params UploadObject[] uploadObjects)
+        /// <param name="uploadObjects">Upload objects</param>
+        public static void ConfigureUploadObject(params UploadObject[] uploadObjects)
         {
             if (uploadObjects.IsNullOrEmpty())
             {
@@ -92,23 +96,23 @@ namespace DDD.Util.Upload
             }
             foreach (var uploadObject in uploadObjects)
             {
-                UploadObjectCollection[uploadObject.Name] = uploadObject;
+                UploadObjectConfigurations[uploadObject.Name] = uploadObject;
             }
         }
 
         #endregion
 
-        #region get upload option
+        #region Gets upload option
 
         /// <summary>
-        /// get upload option
+        /// Gets upload option
         /// </summary>
-        /// <param name="uploadObjectName">upload object name</param>
-        /// <returns></returns>
+        /// <param name="uploadObjectName">Upload object name</param>
+        /// <returns>Return the upload option</returns>
         static UploadOption GetUploadOption(string uploadObjectName)
         {
             var currentOption = Default;
-            if (UploadObjectCollection.TryGetValue(uploadObjectName ?? string.Empty, out var uploadObject) || uploadObject?.UploadOption != null)
+            if (UploadObjectConfigurations.TryGetValue(uploadObjectName ?? string.Empty, out var uploadObject) || uploadObject?.UploadOption != null)
             {
                 currentOption = uploadObject.UploadOption;
             }
@@ -117,16 +121,16 @@ namespace DDD.Util.Upload
 
         #endregion
 
-        #region upload by config
+        #region Upload by configuration
 
         /// <summary>
-        /// upload by config
+        /// Upload by configuration
         /// </summary>
-        /// <param name="fileOptions">file options</param>
-        /// <param name="files">files</param>
-        /// <param name="parameters">parameters</param>
-        /// <returns></returns>
-        public static async Task<UploadResult> UploadByConfigAsync(IEnumerable<UploadFile> fileOptions, Dictionary<string, byte[]> files, Dictionary<string, string> parameters = null)
+        /// <param name="fileOptions">File options</param>
+        /// <param name="files">Files</param>
+        /// <param name="parameters">Parameters</param>
+        /// <returns>Return the upload result</returns>
+        public static async Task<UploadResult> UploadByConfigurationAsync(IEnumerable<UploadFile> fileOptions, Dictionary<string, byte[]> files, Dictionary<string, string> parameters = null)
         {
             if (fileOptions.IsNullOrEmpty())
             {
@@ -164,18 +168,30 @@ namespace DDD.Util.Upload
             return uploadResult;
         }
 
+        /// <summary>
+        /// Upload by configuration
+        /// </summary>
+        /// <param name="fileOptions">File options</param>
+        /// <param name="files">Files</param>
+        /// <param name="parameters">Parameters</param>
+        /// <returns>Return the upload result</returns>
+        public static UploadResult UploadByConfiguration(IEnumerable<UploadFile> fileOptions, Dictionary<string, byte[]> files, Dictionary<string, string> parameters = null)
+        {
+            return UploadByConfigurationAsync(fileOptions, files, parameters).Result;
+        }
+
         #endregion
 
-        #region upload by upload option
+        #region Upload by upload option
 
         /// <summary>
-        /// upload by upload option
+        /// Upload by upload option
         /// </summary>
-        /// <param name="uploadOption">upload option</param>
-        /// <param name="fileOptions">file options</param>
-        /// <param name="files">files</param>
-        /// <param name="parameters">parameters</param>
-        /// <returns></returns>
+        /// <param name="uploadOption">Upload option</param>
+        /// <param name="fileOptions">File options</param>
+        /// <param name="files">Files</param>
+        /// <param name="parameters">Parameters</param>
+        /// <returns>Return the upload result</returns>
         public static async Task<UploadResult> UploadByOptionAsync(UploadOption uploadOption, IEnumerable<UploadFile> fileOptions, Dictionary<string, byte[]> files, Dictionary<string, string> parameters = null)
         {
             if (files == null || files.Count <= 0)
@@ -198,47 +214,73 @@ namespace DDD.Util.Upload
             return uploadResult;
         }
 
+        /// <summary>
+        /// Upload by upload option
+        /// </summary>
+        /// <param name="uploadOption">Upload option</param>
+        /// <param name="fileOptions">File options</param>
+        /// <param name="files">Files</param>
+        /// <param name="parameters">Parameters</param>
+        /// <returns>Return the upload result</returns>
+        public static UploadResult UploadByOption(UploadOption uploadOption, IEnumerable<UploadFile> fileOptions, Dictionary<string, byte[]> files, Dictionary<string, string> parameters = null)
+        {
+            return UploadByOptionAsync(uploadOption, fileOptions, files, parameters).Result;
+        }
+
         #endregion
 
-        #region remote upload
+        #region Remote upload
 
         /// <summary>
-        /// remote upload file
+        /// Remote upload file
         /// </summary>
-        /// <param name="remoteOption">remote option</param>
-        /// <param name="fileOptions">file options</param>
-        /// <param name="files">upload files</param>
-        /// <param name="parameters">parameters</param>
-        /// <returns></returns>
-        public static async Task<UploadResult> RemoteUploadAsync(RemoteOption remoteOption, List<UploadFile> fileOptions, Dictionary<string, byte[]> files, Dictionary<string, string> parameters = null)
+        /// <param name="remoteOption">Remote option</param>
+        /// <param name="fileOptions">File options</param>
+        /// <param name="files">Upload files</param>
+        /// <param name="parameters">Parameters</param>
+        /// <returns>Return the upload result</returns>
+        public static async Task<UploadResult> RemoteUploadAsync(RemoteServerOption remoteOption, List<UploadFile> fileOptions, Dictionary<string, byte[]> files, Dictionary<string, string> parameters = null)
         {
-            if (remoteOption == null || string.IsNullOrWhiteSpace(remoteOption.Server))
+            if (remoteOption == null || string.IsNullOrWhiteSpace(remoteOption.Host))
             {
                 throw new ArgumentNullException(nameof(remoteOption));
             }
-            if (files == null || files.Count <= 0)
+            if (files.IsNullOrEmpty())
             {
                 throw new ArgumentNullException(nameof(files));
             }
-            RemoteUploadParameter uploadParameter = new RemoteUploadParameter()
+            RemoteParameter uploadParameter = new RemoteParameter()
             {
                 Files = fileOptions
             };
-            parameters = parameters ?? new Dictionary<string, string>();
-            parameters.Add(RemoteUploadParameter.REQUEST_KEY, JsonSerialize.ObjectToJson(uploadParameter));
+            parameters ??= new Dictionary<string, string>();
+            parameters[RemoteParameter.RequestParameterName] = JsonSerializeHelper.ObjectToJson(uploadParameter);
             string url = remoteOption.GetUploadUrl();
-            return await HttpUtil.UploadAsync(url, files, parameters).ConfigureAwait(false);
+            return await HttpHelper.PostUploadAsync(url, files, parameters).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// remote upload file
+        /// Remote upload file
         /// </summary>
-        /// <param name="remoteOption">remote options</param>
-        /// <param name="fileOption">file option</param>
-        /// <param name="file">upload file</param>
-        /// <param name="parameters">parameters</param>
-        /// <returns></returns>
-        public static async Task<UploadResult> RemoteUploadAsync(RemoteOption remoteOption, UploadFile fileOption, byte[] file, object parameters = null)
+        /// <param name="remoteOption">Remote option</param>
+        /// <param name="fileOptions">File options</param>
+        /// <param name="files">Upload files</param>
+        /// <param name="parameters">Parameters</param>
+        /// <returns>Return the upload result</returns>
+        public static UploadResult RemoteUpload(RemoteServerOption remoteOption, List<UploadFile> fileOptions, Dictionary<string, byte[]> files, Dictionary<string, string> parameters = null)
+        {
+            return RemoteUploadAsync(remoteOption, fileOptions, files, parameters).Result;
+        }
+
+        /// <summary>
+        /// Remote upload file
+        /// </summary>
+        /// <param name="remoteOption">Remote option</param>
+        /// <param name="fileOption">File option</param>
+        /// <param name="file">Upload file</param>
+        /// <param name="parameters">Parameters</param>
+        /// <returns>Return the upload result</returns>
+        public static async Task<UploadResult> RemoteUploadAsync(RemoteServerOption remoteOption, UploadFile fileOption, byte[] file, object parameters = null)
         {
             if (fileOption == null)
             {
@@ -252,17 +294,30 @@ namespace DDD.Util.Upload
             return await RemoteUploadAsync(remoteOption, new List<UploadFile>() { fileOption }, new Dictionary<string, byte[]>() { { "file1", file } }, parameterDic).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Remote upload file
+        /// </summary>
+        /// <param name="remoteOption">remote options</param>
+        /// <param name="fileOption">File option</param>
+        /// <param name="file">Upload file</param>
+        /// <param name="parameters">Parameters</param>
+        /// <returns>Return the upload result</returns>
+        public static UploadResult RemoteUpload(RemoteServerOption remoteOption, UploadFile fileOption, byte[] file, object parameters = null)
+        {
+            return RemoteUploadAsync(remoteOption, fileOption, file, parameters).Result;
+        }
+
         #endregion
 
-        #region local upload
+        #region Local upload
 
         /// <summary>
-        /// local upload file
+        /// Local upload file
         /// </summary>
-        /// <param name="uploadOption">upload option</param>
-        /// <param name="fileOptions">file options</param>
-        /// <param name="files">files</param>
-        /// <returns></returns>
+        /// <param name="uploadOption">Upload option</param>
+        /// <param name="fileOptions">File options</param>
+        /// <param name="files">Files</param>
+        /// <returns>Return the upload result</returns>
         public static async Task<UploadResult> LocalUploadAsync(UploadOption uploadOption, List<UploadFile> fileOptions, Dictionary<string, byte[]> files)
         {
             if (fileOptions.IsNullOrEmpty() || files == null || files.Count <= 0)
@@ -270,7 +325,7 @@ namespace DDD.Util.Upload
                 return new UploadResult()
                 {
                     Code = "400",
-                    ErrorMessage = "没有指定任何上传文件配置或文件信息",
+                    ErrorMessage = "No upload file configuration or file information is specified",
                     Success = false
                 };
             }
@@ -291,19 +346,31 @@ namespace DDD.Util.Upload
                         Rename = false
                     };
                 }
-                var fileResult = await LocalUploadFileAsync(uploadOption, fileConfig, fileItem.Value);
+                var fileResult = await LocalUploadFileAsync(uploadOption, fileConfig, fileItem.Value).ConfigureAwait(false);
                 result.Files.Add(fileResult);
             }
             return result;
         }
 
         /// <summary>
-        ///  local upload file
+        /// Local upload file
         /// </summary>
-        /// <param name="uploadOption">upload option</param>
-        /// <param name="fileOption">file option</param>
-        /// <param name="file">file</param>
-        /// <returns></returns>
+        /// <param name="uploadOption">Upload option</param>
+        /// <param name="fileOptions">File options</param>
+        /// <param name="files">Files</param>
+        /// <returns>Return the upload result</returns>
+        public static UploadResult LocalUpload(UploadOption uploadOption, List<UploadFile> fileOptions, Dictionary<string, byte[]> files)
+        {
+            return LocalUploadAsync(uploadOption, fileOptions, files).Result;
+        }
+
+        /// <summary>
+        ///  Local upload file
+        /// </summary>
+        /// <param name="uploadOption">Upload option</param>
+        /// <param name="fileOption">File option</param>
+        /// <param name="file">File</param>
+        /// <returns>Return the upload result</returns>
         public static async Task<UploadResult> LocalUploadAsync(UploadOption uploadOption, UploadFile fileOption, byte[] file)
         {
             var fileResult = await LocalUploadFileAsync(uploadOption, fileOption, file).ConfigureAwait(false);
@@ -319,12 +386,24 @@ namespace DDD.Util.Upload
         }
 
         /// <summary>
-        /// local upload file
+        ///  Local upload file
         /// </summary>
-        /// <param name="uploadOption">upload option</param>
-        /// <param name="fileOption">file option</param>
-        /// <param name="file">file</param>
-        /// <returns></returns>
+        /// <param name="uploadOption">Upload option</param>
+        /// <param name="fileOption">File option</param>
+        /// <param name="file">File</param>
+        /// <returns>Return the upload result</returns>
+        public static UploadResult LocalUpload(UploadOption uploadOption, UploadFile fileOption, byte[] file)
+        {
+            return LocalUploadAsync(uploadOption, fileOption, file).Result;
+        }
+
+        /// <summary>
+        /// Local upload file
+        /// </summary>
+        /// <param name="uploadOption">Upload option</param>
+        /// <param name="fileOption">File option</param>
+        /// <param name="file">File</param>
+        /// <returns>upload file result</returns>
         static async Task<UploadFileResult> LocalUploadFileAsync(UploadOption uploadOption, UploadFile fileOption, byte[] file)
         {
             #region verify parameters
@@ -342,21 +421,20 @@ namespace DDD.Util.Upload
 
             #region set save path
 
-            string savePath = uploadOption.SavePath;
-            string realSavePath = savePath;
-
-            if (realSavePath.IsNullOrEmpty())
+            string savePath = uploadOption.SavePath ?? string.Empty;
+            if (uploadOption.SaveToContentRoot)
             {
-                realSavePath = Directory.GetCurrentDirectory();
+                var contentFolder = string.IsNullOrWhiteSpace(uploadOption.ContentRootPath) ? DefaultContentFolder : uploadOption.ContentRootPath;
+                savePath = Path.IsPathRooted(savePath) ? Path.Combine(savePath, contentFolder) : Path.Combine(contentFolder, savePath);
             }
-            realSavePath = Path.Combine(realSavePath, fileOption.Folder ?? string.Empty);
+            if (!string.IsNullOrWhiteSpace(fileOption.Folder))
+            {
+                savePath = Path.Combine(savePath, fileOption.Folder);
+            }
+            string realSavePath = savePath;
             if (!Path.IsPathRooted(realSavePath))
             {
-                if (uploadOption.SaveToContentRoot)
-                {
-                    savePath = Path.Combine(string.IsNullOrWhiteSpace(uploadOption.ContentRootPath) ? "content" : uploadOption.ContentRootPath, realSavePath);
-                }
-                realSavePath = Path.Combine(Directory.GetCurrentDirectory(), savePath);
+                realSavePath = Path.Combine(Directory.GetCurrentDirectory(), realSavePath);
             }
             if (!Directory.Exists(realSavePath))
             {
@@ -390,7 +468,7 @@ namespace DDD.Util.Upload
 
             string fileFullPath = Path.Combine(realSavePath, fileName);
             File.WriteAllBytes(fileFullPath, file);
-            string relativePath = Path.Combine(savePath, fileName);
+            string relativePath = Path.Combine(savePath ?? string.Empty, fileName);
 
             #endregion
 

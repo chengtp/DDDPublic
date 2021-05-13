@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Dapper
+namespace DDD.Util.Dapper
 {
     public partial class DynamicParameters
     {

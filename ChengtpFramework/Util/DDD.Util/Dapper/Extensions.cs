@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Dapper
+namespace DDD.Util.Dapper
 {
     internal static class Extensions
     {

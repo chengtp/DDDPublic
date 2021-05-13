@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDD.Util.ValueType
 {
     /// <summary>
-    /// Address
+    /// Address info
     /// </summary>
     [Serializable]
-    public class Address
+    public struct Address
     {
-        #region constructor
+        #region Constructor
 
         /// <summary>
-        /// instance a address
+        /// Initializes a new instance of the DDD.Util.ValueType.Address
         /// </summary>
         /// <param name="streetAddress">street address</param>
         /// <param name="regionList">region list</param>
@@ -29,20 +26,20 @@ namespace DDD.Util.ValueType
 
         #endregion
 
-        #region Propertys
+        #region Properties
 
         /// <summary>
-        /// get regions
+        /// Gets regions
         /// </summary>
         public List<Region> Regions { get; }
 
         /// <summary>
-        /// get street address
+        /// Gets the street address
         /// </summary>
         public string StreetAddress { get; }
 
         /// <summary>
-        /// get zip code
+        /// Gets zip code
         /// </summary>
         public string ZipCode { get; }
 
@@ -53,16 +50,16 @@ namespace DDD.Util.ValueType
     /// region
     /// </summary>
     [Serializable]
-    public class Region
+    public struct Region
     {
-        #region constructor
+        #region Constructor
 
         /// <summary>
-        /// instance a Region
+        /// Initializes a new instance of the DDD.Util.ValueType.Region
         /// </summary>
         /// <param name="name">region name</param>
         /// <param name="code">region code</param>
-        public Region(string name, string code = "",int level=0)
+        public Region(string name, string code = "", int level = 0)
         {
             Name = name;
             Code = code;
@@ -71,20 +68,20 @@ namespace DDD.Util.ValueType
 
         #endregion
 
-        #region Propertys
+        #region Properties
 
         /// <summary>
-        /// get region name
+        /// Gets region name
         /// </summary>
         public string Name { get; }
 
         /// <summary>
-        /// get region code
+        /// Gets region code
         /// </summary>
         public string Code { get; }
 
         /// <summary>
-        /// get region level
+        /// Gets region level
         /// </summary>
         public int Level { get; }
 

@@ -1,21 +1,22 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace DDD.Util.Serialize.Json.JsonNet
 {
+    /// <summary>
+    /// Private fields or properties resolver
+    /// </summary>
     public class JsonSerializePrivatesResolver : DefaultContractResolver
     {
-        static ConcurrentDictionary<Guid, List<JsonProperty>> cacheJsonPropertys = new ConcurrentDictionary<Guid, List<JsonProperty>>();
+        static ConcurrentDictionary<Guid, List<JsonProperty>> CacheJsonProperties = new ConcurrentDictionary<Guid, List<JsonProperty>>();
 
         protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
         {
-            if (cacheJsonPropertys.TryGetValue(type.GUID, out List<JsonProperty> jsonPropertys))
+            if (CacheJsonProperties.TryGetValue(type.GUID, out List<JsonProperty> jsonPropertys))
             {
                 return jsonPropertys ?? new List<JsonProperty>(0);
             }
@@ -28,7 +29,7 @@ namespace DDD.Util.Serialize.Json.JsonNet
                 jsonProperty.Readable = true;
                 jsonPropertys.Add(jsonProperty);
             }
-            cacheJsonPropertys[type.GUID] = jsonPropertys;
+            CacheJsonProperties[type.GUID] = jsonPropertys;
             return jsonPropertys;
         }
     }

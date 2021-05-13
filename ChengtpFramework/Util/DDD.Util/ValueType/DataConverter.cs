@@ -5,130 +5,128 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace DDD.Util.ValueType
 {
     /// <summary>
-    /// Data Converter
+    /// Data converter
     /// </summary>
     public static class DataConverter
     {
         /// <summary>
-        /// convert collections to xml
+        /// Convert collections to xml
         /// </summary>
-        /// <typeparam name="T">data type</typeparam>
-        /// <param name="itemName">root element name</param>
-        /// <param name="modelList">data list</param>
-        /// <returns>xml object</returns>
-        public static object ConvertIEnumerableToXml<T>(string itemName, IEnumerable<T> modelList)
+        /// <typeparam name="T">Data type</typeparam>
+        /// <param name="itemName">Root element name</param>
+        /// <param name="dataList">Data list</param>
+        /// <returns>Reeturn xml object</returns>
+        public static object ConvertIEnumerableToXml<T>(string itemName, IEnumerable<T> dataList)
         {
-            if (modelList == null)
+            if (dataList == null)
             {
                 return DBNull.Value;
             }
-            using (var sw = new StringWriter())
+            using (var stringWriter = new StringWriter())
             {
-                var writer = new XmlTextWriter(sw);
-                writer.WriteStartElement(itemName + "s");
-                foreach (T model in modelList)
+                var xmlWriter = new XmlTextWriter(stringWriter);
+                xmlWriter.WriteStartElement(itemName + "s");
+                foreach (T data in dataList)
                 {
-                    writer.WriteStartElement(itemName);
+                    xmlWriter.WriteStartElement(itemName);
                     var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                    foreach (PropertyInfo p in properties)
+                    foreach (PropertyInfo property in properties)
                     {
                         try
                         {
-                            writer.WriteAttributeString(p.Name, p.GetValue(model, null) == null ? "" : p.GetValue(model, null).ToString());
+                            xmlWriter.WriteAttributeString(property.Name, property.GetValue(data, null) == null ? "" : property.GetValue(data, null).ToString());
                         }
                         catch
                         {
-                            writer.WriteAttributeString(p.Name, DBNull.Value.ToString(CultureInfo.InvariantCulture));
+                            xmlWriter.WriteAttributeString(property.Name, DBNull.Value.ToString(CultureInfo.CurrentCulture));
                         }
                     }
-                    writer.WriteEndElement();
+                    xmlWriter.WriteEndElement();
                 }
-                writer.WriteEndElement();
-                writer.Close();
-                return sw.ToString();
+                xmlWriter.WriteEndElement();
+                xmlWriter.Close();
+                return stringWriter.ToString();
             }
         }
 
         /// <summary>
-        /// convert collections to datatable
+        /// Convert collections to datatable
         /// </summary>
-        /// <typeparam name="T">data type</typeparam>
-        /// <param name="modelList">data list</param>
-        /// <returns>datatable</returns>
-        public static DataTable ConvertIEnumerableToTable<T>(IEnumerable<T> modelList)
+        /// <typeparam name="T">Data type</typeparam>
+        /// <param name="dataList">Data list</param>
+        /// <returns>Return datatable</returns>
+        public static DataTable ConvertIEnumerableToTable<T>(IEnumerable<T> dataList)
         {
-            if (modelList == null || !modelList.Any())
+            if (dataList == null || !dataList.Any())
             {
                 return null;
             }
             DataTable table = new DataTable();
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var pro in properties)
+            foreach (var property in properties)
             {
-                table.Columns.Add(pro.Name);
+                table.Columns.Add(property.Name);
             }
-            foreach (var model in modelList)
+            foreach (var data in dataList)
             {
-                DataRow dr = table.NewRow();
-                foreach (var pro in properties)
+                DataRow dataRow = table.NewRow();
+                foreach (var property in properties)
                 {
-                    dr[pro.Name] = pro.GetValue(model);
+                    dataRow[property.Name] = property.GetValue(data);
                 }
-                table.Rows.Add(dr);
+                table.Rows.Add(dataRow);
             }
             return table;
         }
 
         /// <summary>
-        /// convert data type
+        /// Convert data type
         /// </summary>
-        /// <typeparam name="T">target data type</typeparam>
-        /// <param name="value">object</param>
-        /// <returns>target data object</returns>
-        public static T Convert<T>(object value)
+        /// <typeparam name="T">Target data type</typeparam>
+        /// <param name="data">Data</param>
+        /// <returns>Return the target data</returns>
+        public static T Convert<T>(object data)
         {
-            if (value == null)
+            if (data == null)
             {
-                return default(T);
+                return default;
             }
-            return Convert(value, typeof(T));
+            return Convert(data, typeof(T));
         }
 
         /// <summary>
-        /// convert data type
+        /// Convert data type
         /// </summary>
-        /// <param name="targetType">data type</param>
-        /// <param name="value">value</param>
-        /// <returns></returns>
-        public static dynamic Convert(object value, Type targetType)
+        /// <param name="targetType">Target data type</param>
+        /// <param name="data">Data</param>
+        /// <returns>Return the targete data</returns>
+        public static dynamic Convert(object data, Type targetType)
         {
-            if (value == null)
+            if (data == null)
             {
                 return null;
             }
-            return System.Convert.ChangeType(value, targetType);
+            return System.Convert.ChangeType(data, targetType);
         }
 
         /// <summary>
-        /// determine whether is a simple data type
+        /// Determine whether is a simple data type
         /// </summary>
-        /// <param name="type">data type</param>
-        /// <returns>whether is simple data type</returns>
+        /// <param name="type">Data type</param>
+        /// <returns>Return whether is simple data type</returns>
         public static bool IsSimpleType(Type type)
         {
             if (type == null)
             {
                 return false;
             }
-            bool simpleType = false;
             var typeCode = Type.GetTypeCode(type);
+            bool simpleType;
             switch (typeCode)
             {
                 case TypeCode.Boolean:

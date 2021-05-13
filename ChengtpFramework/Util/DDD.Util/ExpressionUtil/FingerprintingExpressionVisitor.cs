@@ -29,7 +29,7 @@ namespace DDD.Util.ExpressionUtil
 
         // Returns the fingerprint chain + captured constants list for this expression, or null
         // if the expression couldn't be fingerprinted.
-        public static ExpressionFingerprintChain GetFingerprintChain(Expression expr, out List<object> capturedConstants)
+        public static ExpressionFingerprintChain GetFingerprintChain(System.Linq.Expressions.Expression expr, out List<object> capturedConstants)
         {
             FingerprintingExpressionVisitor visitor = new FingerprintingExpressionVisitor();
             visitor.Visit(expr);
@@ -46,7 +46,7 @@ namespace DDD.Util.ExpressionUtil
             }
         }
 
-        public override Expression Visit(Expression node)
+        public override System.Linq.Expressions.Expression Visit(System.Linq.Expressions.Expression node)
         {
             if (node == null)
             {
@@ -59,7 +59,7 @@ namespace DDD.Util.ExpressionUtil
             }
         }
 
-        protected override Expression VisitBinary(BinaryExpression node)
+        protected override System.Linq.Expressions.Expression VisitBinary(BinaryExpression node)
         {
             if (_gaveUp)
             {
@@ -69,7 +69,7 @@ namespace DDD.Util.ExpressionUtil
             return base.VisitBinary(node);
         }
 
-        protected override Expression VisitBlock(BlockExpression node)
+        protected override System.Linq.Expressions.Expression VisitBlock(BlockExpression node)
         {
             return GiveUp(node);
         }
@@ -79,7 +79,7 @@ namespace DDD.Util.ExpressionUtil
             return GiveUp(node);
         }
 
-        protected override Expression VisitConditional(ConditionalExpression node)
+        protected override System.Linq.Expressions.Expression VisitConditional(ConditionalExpression node)
         {
             if (_gaveUp)
             {
@@ -89,7 +89,7 @@ namespace DDD.Util.ExpressionUtil
             return base.VisitConditional(node);
         }
 
-        protected override Expression VisitConstant(ConstantExpression node)
+        protected override System.Linq.Expressions.Expression VisitConstant(ConstantExpression node)
         {
             if (_gaveUp)
             {
@@ -101,12 +101,12 @@ namespace DDD.Util.ExpressionUtil
             return base.VisitConstant(node);
         }
 
-        protected override Expression VisitDebugInfo(DebugInfoExpression node)
+        protected override System.Linq.Expressions.Expression VisitDebugInfo(DebugInfoExpression node)
         {
             return GiveUp(node);
         }
 
-        protected override Expression VisitDefault(DefaultExpression node)
+        protected override System.Linq.Expressions.Expression VisitDefault(DefaultExpression node)
         {
             if (_gaveUp)
             {
@@ -116,7 +116,7 @@ namespace DDD.Util.ExpressionUtil
             return base.VisitDefault(node);
         }
 
-        protected override Expression VisitDynamic(DynamicExpression node)
+        protected override System.Linq.Expressions.Expression VisitDynamic(DynamicExpression node)
         {
             return GiveUp(node);
         }
@@ -126,17 +126,17 @@ namespace DDD.Util.ExpressionUtil
             return GiveUp(node);
         }
 
-        protected override Expression VisitExtension(Expression node)
+        protected override System.Linq.Expressions.Expression VisitExtension(System.Linq.Expressions.Expression node)
         {
             return GiveUp(node);
         }
 
-        protected override Expression VisitGoto(GotoExpression node)
+        protected override System.Linq.Expressions.Expression VisitGoto(GotoExpression node)
         {
             return GiveUp(node);
         }
 
-        protected override Expression VisitIndex(IndexExpression node)
+        protected override System.Linq.Expressions.Expression VisitIndex(IndexExpression node)
         {
             if (_gaveUp)
             {
@@ -146,12 +146,12 @@ namespace DDD.Util.ExpressionUtil
             return base.VisitIndex(node);
         }
 
-        protected override Expression VisitInvocation(InvocationExpression node)
+        protected override System.Linq.Expressions.Expression VisitInvocation(InvocationExpression node)
         {
             return GiveUp(node);
         }
 
-        protected override Expression VisitLabel(LabelExpression node)
+        protected override System.Linq.Expressions.Expression VisitLabel(LabelExpression node)
         {
             return GiveUp(node);
         }
@@ -161,7 +161,7 @@ namespace DDD.Util.ExpressionUtil
             return GiveUp(node);
         }
 
-        protected override Expression VisitLambda<T>(Expression<T> node)
+        protected override System.Linq.Expressions.Expression VisitLambda<T>(Expression<T> node)
         {
             if (_gaveUp)
             {
@@ -171,17 +171,17 @@ namespace DDD.Util.ExpressionUtil
             return base.VisitLambda<T>(node);
         }
 
-        protected override Expression VisitListInit(ListInitExpression node)
+        protected override System.Linq.Expressions.Expression VisitListInit(ListInitExpression node)
         {
             return GiveUp(node);
         }
 
-        protected override Expression VisitLoop(LoopExpression node)
+        protected override System.Linq.Expressions.Expression VisitLoop(LoopExpression node)
         {
             return GiveUp(node);
         }
 
-        protected override Expression VisitMember(MemberExpression node)
+        protected override System.Linq.Expressions.Expression VisitMember(MemberExpression node)
         {
             if (_gaveUp)
             {
@@ -201,7 +201,7 @@ namespace DDD.Util.ExpressionUtil
             return GiveUp(node);
         }
 
-        protected override Expression VisitMemberInit(MemberInitExpression node)
+        protected override System.Linq.Expressions.Expression VisitMemberInit(MemberInitExpression node)
         {
             return GiveUp(node);
         }
@@ -216,7 +216,7 @@ namespace DDD.Util.ExpressionUtil
             return GiveUp(node);
         }
 
-        protected override Expression VisitMethodCall(MethodCallExpression node)
+        protected override System.Linq.Expressions.Expression VisitMethodCall(MethodCallExpression node)
         {
             if (_gaveUp)
             {
@@ -226,17 +226,17 @@ namespace DDD.Util.ExpressionUtil
             return base.VisitMethodCall(node);
         }
 
-        protected override Expression VisitNew(NewExpression node)
+        protected override System.Linq.Expressions.Expression VisitNew(NewExpression node)
         {
             return GiveUp(node);
         }
 
-        protected override Expression VisitNewArray(NewArrayExpression node)
+        protected override System.Linq.Expressions.Expression VisitNewArray(NewArrayExpression node)
         {
             return GiveUp(node);
         }
 
-        protected override Expression VisitParameter(ParameterExpression node)
+        protected override System.Linq.Expressions.Expression VisitParameter(ParameterExpression node)
         {
             if (_gaveUp)
             {
@@ -255,12 +255,12 @@ namespace DDD.Util.ExpressionUtil
             return base.VisitParameter(node);
         }
 
-        protected override Expression VisitRuntimeVariables(RuntimeVariablesExpression node)
+        protected override System.Linq.Expressions.Expression VisitRuntimeVariables(RuntimeVariablesExpression node)
         {
             return GiveUp(node);
         }
 
-        protected override Expression VisitSwitch(SwitchExpression node)
+        protected override System.Linq.Expressions.Expression VisitSwitch(SwitchExpression node)
         {
             return GiveUp(node);
         }
@@ -270,12 +270,12 @@ namespace DDD.Util.ExpressionUtil
             return GiveUp(node);
         }
 
-        protected override Expression VisitTry(TryExpression node)
+        protected override System.Linq.Expressions.Expression VisitTry(TryExpression node)
         {
             return GiveUp(node);
         }
 
-        protected override Expression VisitTypeBinary(TypeBinaryExpression node)
+        protected override System.Linq.Expressions.Expression VisitTypeBinary(TypeBinaryExpression node)
         {
             if (_gaveUp)
             {
@@ -285,7 +285,7 @@ namespace DDD.Util.ExpressionUtil
             return base.VisitTypeBinary(node);
         }
 
-        protected override Expression VisitUnary(UnaryExpression node)
+        protected override System.Linq.Expressions.Expression VisitUnary(UnaryExpression node)
         {
             if (_gaveUp)
             {

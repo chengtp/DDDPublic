@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
 
-namespace Dapper
+namespace DDD.Util.Dapper
 {
     /// <summary>
     /// Represents the key aspects of a sql operation

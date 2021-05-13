@@ -1,28 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDD.Util.Paging
 {
     /// <summary>
-    /// Paging Query Condition
+    /// Paging query condition
     /// </summary>
     [Serializable]
     public class PagingFilter
     {
-        #region fields
+        #region Fields
 
-        protected int page = 1;//Page Index
-        protected int pageSize = 20;//Page Size 
+        /// <summary>
+        /// page index
+        /// </summary>
+        protected int page = 1;
+
+        /// <summary>
+        /// page size
+        /// </summary>
+        protected int pageSize = 20;
 
         #endregion
 
-        #region Propertys
+        #region Properties
 
         /// <summary>
-        /// Page Index
+        /// Gets or sets page index
         /// </summary>
         public int Page
         {
@@ -41,7 +44,7 @@ namespace DDD.Util.Paging
         }
 
         /// <summary>
-        /// Page Size
+        /// Gets or sets page size
         /// </summary>
         public int PageSize
         {

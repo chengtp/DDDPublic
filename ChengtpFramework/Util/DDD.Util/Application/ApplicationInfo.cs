@@ -1,34 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DDD.Util.Application
 {
     /// <summary>
-    /// Application Info
+    /// Provides properties of application
     /// </summary>
+    [Serializable]
     public class ApplicationInfo
     {
-        #region Propertys
-
         /// <summary>
-        /// App Code
+        /// Gets or sets application code
         /// </summary>
-        public string AppCode
+        public string Code
         {
             get; set;
         }
 
         /// <summary>
-        /// App Secret
+        /// Gets or sets application secret
         /// </summary>
-        public string AppSecret
+        public string Secret
         {
             get; set;
         }
 
         /// <summary>
-        /// Name
+        /// Gets or sets application name
         /// </summary>
         public string Name
         {
@@ -36,7 +33,7 @@ namespace DDD.Util.Application
         }
 
         /// <summary>
-        /// Application Type
+        /// Gets or sets application type
         /// </summary>
         public ApplicationType Type
         {
@@ -44,13 +41,11 @@ namespace DDD.Util.Application
         }
 
         /// <summary>
-        /// Application Status
+        /// Gets or sets application status
         /// </summary>
         public ApplicationStatus Status
         {
             get; set;
         }
-
-        #endregion
     }
 }

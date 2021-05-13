@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Dev\DDD.DevelopWebCore\DDD.DevelopWebCore\DDD.DevelopWebCore.csproj" />
+    <ProjectReference Include="..\App.DBConfig\App.DBConfig.csproj" />
+    <ProjectReference Include="..\App.Mapper\App.Mapper.csproj" />
+  </ItemGroup>
+
+</Project>

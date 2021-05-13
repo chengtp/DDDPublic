@@ -1,51 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace DDD.Util.Serialize.Json.JsonNet
 {
     /// <summary>
-    /// Json.Net Serializer
+    /// Implement IJsonSerializer using Json.Net
     /// </summary>
     public class JsonNetSerializer : IJsonSerializer
     {
-        static readonly JsonSerializePrivatesResolver jsonSerializePrivatesResolver = new JsonSerializePrivatesResolver();
-        static readonly BigNumberConverter bigNumberConverter = new BigNumberConverter();
-        static readonly PagingConverter pagingConverter = new PagingConverter();
+        /// <summary>
+        /// json serialize privates resolver
+        /// </summary>
+        static readonly JsonSerializePrivatesResolver JsonSerializePrivatesResolver = new JsonSerializePrivatesResolver();
+        /// <summary>
+        /// big number converter
+        /// </summary>
+        static readonly BigNumberConverter BigNumberConverter = new BigNumberConverter();
+        /// <summary>
+        /// paging converter
+        /// </summary>
+        static readonly PagingConverter PagingConverter = new PagingConverter();
 
         /// <summary>
-        /// serialization an object to a JSON string
+        /// Serializes a data object as a string
         /// </summary>
         /// <typeparam name="T">data type</typeparam>
-        /// <param name="obj">object</param>
+        /// <param name="data">data</param>
         /// <param name="jsonSerializeSetting">JsonSerializeSetting</param>
         /// <returns>json string</returns>
-        public string ObjectToJson<T>(T obj, JsonSerializeSetting jsonSerializeSetting)
+        public string ObjectToJson<T>(T data, JsonSerializeSetting jsonSerializeSetting)
         {
-            if (obj == null)
+            if (data == null)
             {
                 return null;
             }
-            if (obj.GetType().GUID == typeof(string).GUID)
+            if (data.GetType().GUID == typeof(string).GUID)
             {
-                return obj.ToString();
+                return data.ToString();
             }
             var settings = new JsonSerializerSettings();
-            settings.Converters.Add(bigNumberConverter);
+            settings.Converters.Add(BigNumberConverter);
             if (jsonSerializeSetting != null)
             {
                 if (jsonSerializeSetting.ResolveNonPublic)
                 {
-                    settings.ContractResolver = jsonSerializePrivatesResolver;
+                    settings.ContractResolver = JsonSerializePrivatesResolver;
                 }
             }
-            string jsonString = JsonConvert.SerializeObject(obj, settings);
+            string jsonString = JsonConvert.SerializeObject(data, settings);
             return jsonString;
         }
 
         /// <summary>
-        /// deserialization a JSON string to an object
+        /// Deserialization a JSON string to an object
         /// </summary>
         /// <param name="json">JSON string</param>
         /// <param name="jsonSerializeSetting">JsonSerializeSetting</param>
@@ -54,7 +61,7 @@ namespace DDD.Util.Serialize.Json.JsonNet
         {
             if (string.IsNullOrWhiteSpace(json))
             {
-                return default(T);
+                return default;
             }
             if (typeof(T).FullName == typeof(string).FullName)
             {
@@ -62,14 +69,14 @@ namespace DDD.Util.Serialize.Json.JsonNet
             }
             JsonSerializerSettings settings = new JsonSerializerSettings()
             {
-                Converters = new List<JsonConverter>() { pagingConverter },
+                Converters = new List<JsonConverter>() { PagingConverter },
                 ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
             };
             if (jsonSerializeSetting != null)
             {
                 if (jsonSerializeSetting.ResolveNonPublic)
                 {
-                    settings.ContractResolver = jsonSerializePrivatesResolver;
+                    settings.ContractResolver = JsonSerializePrivatesResolver;
                 }
             }
             if (jsonSerializeSetting?.DeserializeType == null)

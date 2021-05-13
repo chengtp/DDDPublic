@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DDD.Util.Application
+﻿namespace DDD.Util.Application
 {
     /// <summary>
-    /// application manager
+    /// Provides access to and management of application information
     /// </summary>
     public static class ApplicationManager
     {
         /// <summary>
-        /// current application info
+        /// Gets or sets the information about the currently running application
         /// </summary>
         public static ApplicationInfo Current
         {

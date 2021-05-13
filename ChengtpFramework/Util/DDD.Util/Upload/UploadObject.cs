@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DDD.Util.Upload
 {
     /// <summary>
-    /// upload object
+    /// Upload object
     /// </summary>
+    [Serializable]
     public class UploadObject
     {
         /// <summary>
-        /// upload object name
+        /// Gets or sets upload object name
         /// </summary>
         public string Name
         {
@@ -18,7 +17,7 @@ namespace DDD.Util.Upload
         }
 
         /// <summary>
-        /// upload option
+        /// Gets or sets upload option
         /// </summary>
         public UploadOption UploadOption
         {

@@ -12,29 +12,55 @@ namespace DDD.Util.ExpressionUtil
 {
     public static class ExpressionHelper
     {
-        static ConcurrentDictionary<string, dynamic> propertyOrFieldFunctions = new ConcurrentDictionary<string, dynamic>();//Property or Field access Methods
-        static Type baseExpressType = typeof(Expression);// Expression base type
-        static MethodInfo lambdaMethod = null;//generate lambda method
+        /// <summary>
+        /// //Properties or fields access functions
+        /// </summary>
+        static ConcurrentDictionary<string, dynamic> PropertyOrFieldAccessFunctions = new ConcurrentDictionary<string, dynamic>();
+
+        /// <summary>
+        /// Expression base type
+        /// </summary>
+        static Type BaseExpressType = typeof(System.Linq.Expressions.Expression);
+
+        /// <summary>
+        /// Generate lambda method
+        /// </summary>
+        static MethodInfo LambdaMethod = null;
 
         static ExpressionHelper()
         {
-            var baseExpressMethods = baseExpressType.GetMethods(BindingFlags.Public | BindingFlags.Static);
-            lambdaMethod = baseExpressMethods.FirstOrDefault(c => c.Name == "Lambda" && c.IsGenericMethod && c.GetParameters()[1].ParameterType.FullName == typeof(ParameterExpression[]).FullName);
+            var baseExpressMethods = BaseExpressType.GetMethods(BindingFlags.Public | BindingFlags.Static);
+            LambdaMethod = baseExpressMethods.FirstOrDefault(c => c.Name == "Lambda" && c.IsGenericMethod && c.GetParameters()[1].ParameterType.FullName == typeof(ParameterExpression[]).FullName);
         }
 
+        #region Get expression text
+
+        /// <summary>
+        /// Get expression text
+        /// </summary>
+        /// <param name="expression">expression</param>
+        /// <returns></returns>
         public static string GetExpressionText(string expression)
         {
-            return
-                String.Equals(expression, "model", StringComparison.OrdinalIgnoreCase)
-                    ? String.Empty // If it's exactly "model", then give them an empty string, to replicate the lambda behavior
+            return string.Equals(expression, "model", StringComparison.OrdinalIgnoreCase)
+                    ? string.Empty // If it's exactly "model", then give them an empty string, to replicate the lambda behavior
                     : expression;
         }
 
+        #endregion
+
+        #region Get expression text
+
+        /// <summary>
+        /// Get expression text
+        /// </summary>
+        /// <param name="expression">expression</param>
+        /// <returns>expression text</returns>
         public static string GetExpressionText(LambdaExpression expression)
         {
             // Split apart the expression string for property/field accessors to create its name
             Stack<string> nameParts = new Stack<string>();
-            Expression part = expression.Body;
+            System.Linq.Expressions.Expression part = expression.Body;
             while (part != null)
             {
                 if (part.NodeType == ExpressionType.Call)
@@ -99,14 +125,24 @@ namespace DDD.Util.ExpressionUtil
                 return nameParts.Aggregate((left, right) => left + right).TrimStart('.');
             }
 
-            return String.Empty;
+            return string.Empty;
         }
 
-        private static string GetIndexerInvocation(Expression expression, ParameterExpression[] parameters)
+        #endregion
+
+        #region Get indexer invocation
+
+        /// <summary>
+        /// Get indexer invocation
+        /// </summary>
+        /// <param name="expression">expression</param>
+        /// <param name="parameters">parameters</param>
+        /// <returns>indexer invocation</returns>
+        private static string GetIndexerInvocation(System.Linq.Expressions.Expression expression, ParameterExpression[] parameters)
         {
-            Expression converted = Expression.Convert(expression, typeof(object));
-            ParameterExpression fakeParameter = Expression.Parameter(typeof(object), null);
-            Expression<Func<object, object>> lambda = Expression.Lambda<Func<object, object>>(converted, fakeParameter);
+            System.Linq.Expressions.Expression converted = System.Linq.Expressions.Expression.Convert(expression, typeof(object));
+            ParameterExpression fakeParameter = System.Linq.Expressions.Expression.Parameter(typeof(object), null);
+            Expression<Func<object, object>> lambda = System.Linq.Expressions.Expression.Lambda<Func<object, object>>(converted, fakeParameter);
             Func<object, object> func;
 
             try
@@ -121,7 +157,16 @@ namespace DDD.Util.ExpressionUtil
             return "[" + Convert.ToString(func(null), CultureInfo.InvariantCulture) + "]";
         }
 
-        internal static bool IsSingleArgumentIndexer(Expression expression)
+        #endregion
+
+        #region Whether is a tsingle argument indexer
+
+        /// <summary>
+        /// Whether is a tsingle argument indexer
+        /// </summary>
+        /// <param name="expression">expression</param>
+        /// <returns></returns>
+        internal static bool IsSingleArgumentIndexer(System.Linq.Expressions.Expression expression)
         {
             MethodCallExpression methodExpression = expression as MethodCallExpression;
             if (methodExpression == null || methodExpression.Arguments.Count != 1)
@@ -133,16 +178,18 @@ namespace DDD.Util.ExpressionUtil
                 .GetDefaultMembers()
                 .OfType<PropertyInfo>()
                 .Any(p => p.GetGetMethod() == methodExpression.Method);
-        }
+        } 
+
+        #endregion
 
         #region get expression value
 
         /// <summary>
-        /// get expression value
+        /// Get expression value
         /// </summary>
         /// <param name="valueExpression">expression</param>
         /// <returns>value</returns>
-        public static object GetExpressionValue(Expression valueExpression)
+        public static object GetExpressionValue(System.Linq.Expressions.Expression valueExpression)
         {
             object value = null;
             switch (valueExpression.NodeType)
@@ -185,7 +232,7 @@ namespace DDD.Util.ExpressionUtil
                 case ExpressionType.Subtract:
                 case ExpressionType.SubtractChecked:
                 case ExpressionType.MemberAccess:
-                    value = Expression.Lambda(valueExpression).Compile().DynamicInvoke();
+                    value = System.Linq.Expressions.Expression.Lambda(valueExpression).Compile().DynamicInvoke();
                     break;
                 default:
                     break;
@@ -195,10 +242,10 @@ namespace DDD.Util.ExpressionUtil
 
         #endregion
 
-        #region verify whether is compare node type
+        #region Whether is compare node type
 
         /// <summary>
-        /// verify whether is compare node type
+        /// Whether is compare node type
         /// </summary>
         /// <param name="nodeType">node type</param>
         /// <returns>is compare node type</returns>
@@ -221,10 +268,10 @@ namespace DDD.Util.ExpressionUtil
 
         #endregion
 
-        #region verify whether is boolean node type
+        #region Whether is boolean node type
 
         /// <summary>
-        /// verify whether is boolean node type
+        /// Whether is boolean node type
         /// </summary>
         /// <param name="nodeType">node type</param>
         /// <returns>is boolean nodetype</returns>
@@ -243,12 +290,12 @@ namespace DDD.Util.ExpressionUtil
 
         #endregion
 
-        #region get property name by expression
+        #region Get property name by expression
 
         /// <summary>
-        /// get property name by expression
+        /// Get property name by expression
         /// </summary>
-        public static string GetExpressionPropertyName(Expression propertyExpression)
+        public static string GetExpressionPropertyName(System.Linq.Expressions.Expression propertyExpression)
         {
             string name = string.Empty;
             switch (propertyExpression.NodeType)
@@ -283,7 +330,7 @@ namespace DDD.Util.ExpressionUtil
         }
 
         /// <summary>
-        /// get property or field name by expression
+        /// Get property or field name by expression
         /// </summary>
         /// <typeparam name="T">data type</typeparam>
         /// <param name="propertyOrField">property or field expression</param>
@@ -294,9 +341,9 @@ namespace DDD.Util.ExpressionUtil
         }
 
         /// <summary>
-        /// get property or field name list by expression
+        /// Get property or field name list by expression
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">data type</typeparam>
         /// <param name="propertyOrFields">property or field expression</param>
         /// <returns>name list</returns>
         public static List<string> GetExpressionPropertyNames<T>(params Expression<Func<T, dynamic>>[] propertyOrFields)
@@ -310,20 +357,20 @@ namespace DDD.Util.ExpressionUtil
 
         #endregion
 
-        #region get the children expression
+        #region Get the last child expression
 
         /// <summary>
-        /// get the children expression
+        /// Get the last child expression
         /// </summary>
         /// <param name="expression">parent expression</param>
-        /// <returns>children expression</returns>
-        public static Expression GetLastChildExpression(Expression expression)
+        /// <returns>last child expression expression</returns>
+        public static System.Linq.Expressions.Expression GetLastChildExpression(System.Linq.Expressions.Expression expression)
         {
             if (expression == null)
             {
                 return expression;
             }
-            Expression childExpression = expression;
+            System.Linq.Expressions.Expression childExpression = expression;
             if (expression.CanReduce)
             {
                 return GetLastChildExpression(childExpression.Reduce());
@@ -378,14 +425,14 @@ namespace DDD.Util.ExpressionUtil
 
         #endregion
 
-        #region get the access method with the specified type
+        #region Get the proerty or field access method with the specified type
 
         /// <summary>
-        /// get the access method with the specified type
+        /// Get the proerty or field access method with the specified type
         /// </summary>
         /// <typeparam name="T">data type</typeparam>
         /// <param name="name">field name</param>
-        /// <returns></returns>
+        /// <returns>access method</returns>
         public static Func<T, dynamic> GetPropertyOrFieldFunction<T>(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -394,38 +441,38 @@ namespace DDD.Util.ExpressionUtil
             }
             Type type = typeof(T);
             string funcKey = string.Format("{0}_{1}", type.GUID, name);
-            if (propertyOrFieldFunctions.TryGetValue(funcKey, out dynamic funcValue))
+            if (PropertyOrFieldAccessFunctions.TryGetValue(funcKey, out dynamic funcValue))
             {
                 return funcValue;
             }
-            ParameterExpression parExp = Expression.Parameter(type);//parameter expression
+            ParameterExpression parExp = System.Linq.Expressions.Expression.Parameter(type);//parameter expression
             Array parameterArray = Array.CreateInstance(typeof(ParameterExpression), 1);
             parameterArray.SetValue(parExp, 0);
             string[] propertyNameArray = name.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries);
-            Expression propertyExpress = null;
+            System.Linq.Expressions.Expression propertyExpress = null;
             foreach (string pname in propertyNameArray)
             {
                 if (propertyExpress == null)
                 {
-                    propertyExpress = Expression.PropertyOrField(parExp, pname);
+                    propertyExpress = System.Linq.Expressions.Expression.PropertyOrField(parExp, pname);
                 }
                 else
                 {
-                    propertyExpress = Expression.PropertyOrField(propertyExpress, pname);
+                    propertyExpress = System.Linq.Expressions.Expression.PropertyOrField(propertyExpress, pname);
                 }
             }
             Type funcType = typeof(Func<,>).MakeGenericType(type, typeof(object));// make method
-            var genericLambdaMethod = lambdaMethod.MakeGenericMethod(funcType);
+            var genericLambdaMethod = LambdaMethod.MakeGenericMethod(funcType);
             var lambdaExpression = genericLambdaMethod.Invoke(null, new object[]
             {
-                Expression.Convert(propertyExpress,typeof(object)),parameterArray
+                System.Linq.Expressions.Expression.Convert(propertyExpress,typeof(object)), parameterArray
             }) as Expression<Func<T, object>>;
             if (lambdaExpression == null)
             {
                 return null;
             }
             var function = lambdaExpression.Compile();
-            propertyOrFieldFunctions[funcKey] = function;
+            PropertyOrFieldAccessFunctions[funcKey] = function;
             return function;
         }
 

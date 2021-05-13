@@ -1,21 +1,29 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace DDD.Util.ValueType
 {
     /// <summary>
-    /// Lazy Member
+    /// Lazy member
     /// </summary>
     public class LazyMember<T>
     {
-        #region Propertys
+        #region Constructor
 
         /// <summary>
-        /// Get Value
+        /// Initializes a new instance of the DDD.Util.ValueType.LazyMember<>
+        /// </summary>
+        /// <param name="valueFactory">value factory</param>
+        public LazyMember(Func<T> valueFactory)
+        {
+            ValueFactory = valueFactory ?? throw new ArgumentNullException(nameof(valueFactory));
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets Value
         /// </summary>
         public T Value
         {
@@ -30,7 +38,7 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// value factory
+        /// Gets or sets value factory
         /// </summary>
         protected Func<T> ValueFactory
         {
@@ -38,7 +46,7 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// is created value
+        /// Gets or sets whether value is created
         /// </summary>
         protected bool IsCreatedValue
         {
@@ -46,31 +54,18 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// Get Current Value
+        /// Gets the current value
         /// </summary>
-        public T CurrentValue { get; private set; } = default(T);
+        public T CurrentValue { get; private set; } = default;
 
         #endregion
 
-        #region constructor
+        #region Methods
 
         /// <summary>
-        /// instance a LazyMember<> object
+        /// Gets value
         /// </summary>
-        /// <param name="valueFactory">value factory</param>
-        public LazyMember(Func<T> valueFactory)
-        {
-            ValueFactory = valueFactory ?? throw new ArgumentNullException(nameof(valueFactory));
-        }
-
-        #endregion
-
-        #region methods
-
-        /// <summary>
-        /// get value
-        /// </summary>
-        /// <returns></returns>
+        /// <returns>Return data</returns>
         T GetValue()
         {
             if (IsCreatedValue)
@@ -83,10 +78,10 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// set value
+        /// Sets value
         /// </summary>
-        /// <param name="value">new value</param>
-        /// <param name="createdValue">set value is inited or not</param>
+        /// <param name="value">New value</param>
+        /// <param name="createdValue">Whether inited or not</param>
         public void SetValue(T value, bool createdValue = true)
         {
             IsCreatedValue = createdValue;
@@ -94,25 +89,25 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// implicit convertto T
+        /// Implicit convert to data
         /// </summary>
-        /// <param name="lazyMember"></param>
+        /// <param name="lazyMember">Lazy member</param>
         public static implicit operator T(LazyMember<T> lazyMember)
         {
             if (lazyMember == null)
             {
-                return default(T);
+                return default;
             }
             return lazyMember.Value;
         }
 
         /// <summary>
-        /// implicit convertto lazymember
+        /// Implicit convert to LazyMember<T>
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">Data object</param>
         public static implicit operator LazyMember<T>(T value)
         {
-            var lazyMember = new LazyMember<T>(() => default(T));
+            var lazyMember = new LazyMember<T>(() => default);
             lazyMember.SetValue(value, true);
             return lazyMember;
         }

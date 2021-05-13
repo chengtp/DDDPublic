@@ -1,23 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDD.Util.ValueType
 {
     /// <summary>
-    /// Birth Date Type
+    /// Birth date type
     /// </summary>
     [Serializable]
     public struct Birth
     {
-        #region fields
+        #region Fields
 
-        private int _age;//age
-        private Constellation _constellation;//constellation
-        static TimeSpan Zero = TimeSpan.FromMilliseconds(0);
-        private static readonly Dictionary<Constellation, Tuple<DateTimeOffset, DateTimeOffset>> constellationDic = new Dictionary<Constellation, Tuple<DateTimeOffset, DateTimeOffset>>()
+        /// <summary>
+        /// age
+        /// </summary>
+        private readonly int age;
+
+        /// <summary>
+        /// constellation
+        /// </summary>
+        private readonly Constellation constellation;
+
+        /// <summary>
+        /// zero time span
+        /// </summary>
+        static readonly TimeSpan Zero = TimeSpan.FromMilliseconds(0);
+
+        /// <summary>
+        /// constellations
+        /// </summary>
+        private static readonly Dictionary<Constellation, Tuple<DateTimeOffset, DateTimeOffset>> constellationDictionary = new Dictionary<Constellation, Tuple<DateTimeOffset, DateTimeOffset>>()
         {
             { Constellation.Aquarius,new Tuple<DateTimeOffset, DateTimeOffset>(new DateTimeOffset(2000,1,20,0,0,0,Zero),new DateTimeOffset(2000,2,18,0,0,0,Zero))},
             { Constellation.Pisces,new Tuple<DateTimeOffset, DateTimeOffset>(new DateTimeOffset(2000,2,19,0,0,0,Zero),new DateTimeOffset(2000,3,20,0,0,0,Zero))},
@@ -35,21 +48,21 @@ namespace DDD.Util.ValueType
 
         #endregion
 
-        #region constructor
+        #region Constructor
 
         /// <summary>
-        /// instance a Birth object
+        /// Initializes a new instance of the DDD.Util.ValueType.Birth
         /// </summary>
-        /// <param name="birthDate">birth datetime</param>
+        /// <param name="birthDate">birth date</param>
         public Birth(DateTimeOffset birthDate)
         {
             BirthDate = birthDate;
-            _constellation = GetConstellation(birthDate);
-            _age = GetAge(birthDate);
+            constellation = GetConstellation(birthDate);
+            age = GetAge(birthDate);
         }
 
         /// <summary>
-        /// get age
+        /// Gets age
         /// </summary>
         public int Age
         {
@@ -60,12 +73,12 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// get birth datetime
+        /// Gets birth date
         /// </summary>
         public DateTimeOffset BirthDate { get; }
 
         /// <summary>
-        /// get constellation
+        /// Gets constellation
         /// </summary>
         public Constellation Constellation
         {
@@ -77,33 +90,31 @@ namespace DDD.Util.ValueType
 
         #endregion
 
-        #region static methods
+        #region Methods
 
         /// <summary>
-        /// get constellation
+        /// Gets constellation
         /// </summary>
-        /// <param name="dateTime">datetime</param>
-        /// <returns>Constellation</returns>
-        public static Constellation GetConstellation(DateTimeOffset dateTime)
+        /// <param name="date">Date</param>
+        /// <returns>Return the constellation</returns>
+        public static Constellation GetConstellation(DateTimeOffset date)
         {
-            int month = dateTime.Month;
-            int day = dateTime.Day;
             var constell = Constellation.Gemini;
-            var constellDate = new DateTimeOffset(2000, month, day, 0, 0, 0, Zero);
-            var constellItem = constellationDic.FirstOrDefault(c => c.Value.Item1 <= constellDate && c.Value.Item2 >= constellDate);
+            var constellDate = new DateTimeOffset(2000, date.Month, date.Day, 0, 0, 0, Zero);
+            var constellItem = constellationDictionary.FirstOrDefault(c => c.Value.Item1 <= constellDate && c.Value.Item2 >= constellDate);
             constell = constellItem.Key;
             return constell;
         }
 
         /// <summary>
-        /// get age
+        /// Gets age
         /// </summary>
-        /// <param name="dateTime">birth date</param>
+        /// <param name="date">birth date</param>
         /// <returns>age</returns>
-        public static int GetAge(DateTimeOffset dateTime)
+        public static int GetAge(DateTimeOffset date)
         {
             var nowDate = DateTimeOffset.Now.Date;
-            var birthDate = dateTime.Date;
+            var birthDate = date.Date;
             if (nowDate < birthDate.AddYears(1))
             {
                 return 0;

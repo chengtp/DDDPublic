@@ -11,7 +11,7 @@ namespace DDD.Util.ExpressionUtil
 
     public sealed class HoistingExpressionVisitor<TIn, TOut> : ExpressionVisitor
     {
-        private static readonly ParameterExpression _hoistedConstantsParamExpr = Expression.Parameter(typeof(List<object>), "hoistedConstants");
+        private static readonly ParameterExpression _hoistedConstantsParamExpr = System.Linq.Expressions.Expression.Parameter(typeof(List<object>), "hoistedConstants");
         private int _numConstantsProcessed;
 
         // factory will create instance
@@ -25,14 +25,14 @@ namespace DDD.Util.ExpressionUtil
 
             var visitor = new HoistingExpressionVisitor<TIn, TOut>();
             var rewrittenBodyExpr = visitor.Visit(expr.Body);
-            var rewrittenLambdaExpr = Expression.Lambda<Hoisted<TIn, TOut>>(rewrittenBodyExpr, expr.Parameters[0], _hoistedConstantsParamExpr);
+            var rewrittenLambdaExpr = System.Linq.Expressions.Expression.Lambda<Hoisted<TIn, TOut>>(rewrittenBodyExpr, expr.Parameters[0], _hoistedConstantsParamExpr);
             return rewrittenLambdaExpr;
         }
 
-        protected override Expression VisitConstant(ConstantExpression node)
+        protected override System.Linq.Expressions.Expression VisitConstant(ConstantExpression node)
         {
             // rewrite the constant expression as (TConst)hoistedConstants[i];
-            return Expression.Convert(Expression.Property(_hoistedConstantsParamExpr, "Item", Expression.Constant(_numConstantsProcessed++)), node.Type);
+            return System.Linq.Expressions.Expression.Convert(System.Linq.Expressions.Expression.Property(_hoistedConstantsParamExpr, "Item", System.Linq.Expressions.Expression.Constant(_numConstantsProcessed++)), node.Type);
         }
     }
 }

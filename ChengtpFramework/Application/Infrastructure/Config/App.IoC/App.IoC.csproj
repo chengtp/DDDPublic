@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Dev\DDD.DevelopWebCore\DDD.DevelopWebCore\DDD.DevelopWebCore.csproj" />
+    <ProjectReference Include="..\..\..\..\Util\DDD.Util\DDD.Util.csproj" />
+  </ItemGroup>
+
+</Project>

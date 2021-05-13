@@ -1,48 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DDD.Util.Extension;
 using DDD.Util.Language;
+using DDD.Util.Language.Chinese;
 
 namespace DDD.Util.ValueType
 {
     /// <summary>
-    /// Chinese Text
+    /// Chinese text
     /// </summary>
     [Serializable]
     public struct ChineseText
     {
-
-        #region fields
+        #region Fields
 
         /// <summary>
-        /// chinese spelling
+        /// Chinese spelling
         /// </summary>
         string spelling;
 
         /// <summary>
-        /// spelling short form
+        /// Spelling short form
         /// </summary>
         string spellingShort;
 
         /// <summary>
-        /// spelling is inited
+        /// Spelling is inited
         /// </summary>
         bool spellingInit;
 
         #endregion
 
-        #region constructor
+        #region Constructor
 
         /// <summary>
-        /// instance a ChineseText object
+        /// Initializes a new instance of the DDD.Util.ValueType.ChineseText
         /// </summary>
-        /// <param name="text">full chinese text</param>
-        public ChineseText(string text)
+        /// <param name="chineseText">Chinese text</param>
+        public ChineseText(string chineseText)
         {
-            Text = text.Trim();
+            Text = chineseText.Trim();
             spelling = "";
             spellingShort = "";
             spellingInit = false;
@@ -50,10 +46,10 @@ namespace DDD.Util.ValueType
 
         #endregion
 
-        #region Propertys
+        #region Properties
 
         /// <summary>
-        /// spelling
+        /// Gets spelling
         /// </summary>
         public string Spelling
         {
@@ -64,7 +60,7 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// spelling short
+        /// Gets spelling short
         /// </summary>
         public string SpellingShort
         {
@@ -75,18 +71,18 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// chinese text
+        /// Gets chinese text
         /// </summary>
         public string Text { get; }
 
         #endregion
 
-        #region methods
+        #region Methods
 
         /// <summary>
-        /// get spelling
+        /// Gets spelling
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Return the spelling</returns>
         string GetSpelling()
         {
             if (spellingInit)
@@ -97,9 +93,9 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// get spelling short
+        /// Gets spelling short
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Return spelling short</returns>
         string GetSpellingShort()
         {
             if (spellingInit)
@@ -110,25 +106,25 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// init spelling
+        /// Init spelling
         /// </summary>
         void InitSpelling()
         {
-            if (!Text.IsNullOrEmpty())
+            if (!string.IsNullOrWhiteSpace(Text))
             {
-                var chineseUtil = this.Instance<IChineseLanguage>();
-                if (chineseUtil == null)
+                var chineseProvider = ChineseManager.GetChineseProvider();
+                if (chineseProvider == null)
                 {
                     return;
                 }
-                spelling = chineseUtil.GetSpellingBySimpleChinese(Text);
-                spellingShort = chineseUtil.GetSpellingShortSimpleChinese(Text);
+                spelling = chineseProvider.GetSpellingBySimpleChinese(Text);
+                spellingShort = chineseProvider.GetSpellingShortSimpleChinese(Text);
             }
             spellingInit = true;
         }
 
         /// <summary>
-        /// override ToString
+        /// Override ToString
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -137,18 +133,18 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// implicit convert to string
+        /// Implicit convert to string
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="text">Chinese text</param>
         public static implicit operator string(ChineseText text)
         {
             return text.Text;
         }
 
         /// <summary>
-        /// implicit convert to chineseText
+        /// Implicit convert to chinese text
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">Sttring value</param>
         public static implicit operator ChineseText(string value)
         {
             return new ChineseText(value);

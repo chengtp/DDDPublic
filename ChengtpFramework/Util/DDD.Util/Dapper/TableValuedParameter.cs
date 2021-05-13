@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Dapper
+namespace DDD.Util.Dapper
 {
     /// <summary>
     /// Used to pass a DataTable as a TableValuedParameter

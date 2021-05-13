@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDD.Util.ValueType
 {
@@ -12,41 +8,37 @@ namespace DDD.Util.ValueType
     [Serializable]
     public class Person
     {
-        #region Propertys
-
         /// <summary>
-        /// get or set name
+        /// Gets or sets name
         /// </summary>
         public ChineseText Name { get; set; }
 
         /// <summary>
-        /// get or set birth
+        /// Gets or sets birth
         /// </summary>
         public Birth Birth { get; set; }
 
         /// <summary>
-        /// get or set contact
+        /// Gets or sets contact
         /// </summary>
         public Contact Contact { get; set; }
 
         /// <summary>
-        /// get or set sex
+        /// Gets or sets gender
         /// </summary>
-        public Sex Sex { get; set; }
+        public Gender Gender { get; set; }
 
         /// <summary>
-        /// get or set idcard
+        /// Gets or sets id card
         /// </summary>
-        public string IdCard { get; set; }
-
-        #endregion
+        public string IdentityCard { get; set; }
     }
 
     /// <summary>
-    /// sex
+    /// Defines gender
     /// </summary>
     [Serializable]
-    public enum Sex
+    public enum Gender
     {
         Man = 2,
         Woman = 4,

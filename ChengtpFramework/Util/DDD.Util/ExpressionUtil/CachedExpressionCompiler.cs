@@ -120,10 +120,10 @@ namespace DDD.Util.ExpressionUtil
                         var del = _constMemberAccessDict.GetOrAdd(memberExpr.Member, _ =>
                         {
                             // rewrite as capturedLocal => ((TDeclaringType)capturedLocal).Member
-                            var constParamExpr = Expression.Parameter(typeof(object), "capturedLocal");
-                            var constCastExpr = Expression.Convert(constParamExpr, memberExpr.Member.DeclaringType);
+                            var constParamExpr = System.Linq.Expressions.Expression.Parameter(typeof(object), "capturedLocal");
+                            var constCastExpr = System.Linq.Expressions.Expression.Convert(constParamExpr, memberExpr.Member.DeclaringType);
                             var newMemberAccessExpr = memberExpr.Update(constCastExpr);
-                            var newLambdaExpr = Expression.Lambda<Func<object, TOut>>(newMemberAccessExpr, constParamExpr);
+                            var newLambdaExpr = System.Linq.Expressions.Expression.Lambda<Func<object, TOut>>(newMemberAccessExpr, constParamExpr);
                             return newLambdaExpr.Compile();
                         });
 

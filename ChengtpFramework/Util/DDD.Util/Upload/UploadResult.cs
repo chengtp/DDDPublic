@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDD.Util.Upload
 {
     /// <summary>
-    /// Upload Result
+    /// Upload result
     /// </summary>
     [Serializable]
     public class UploadResult
     {
-        #region Propertys
+        #region Properties
 
         /// <summary>
-        /// get or set whether success
+        /// Gets or sets whether the upload was successful
         /// </summary>
         public bool Success
         {
@@ -24,7 +21,7 @@ namespace DDD.Util.Upload
         }
 
         /// <summary>
-        /// get or set errormsg
+        /// Gets or sets error message
         /// </summary>
         public string ErrorMessage
         {
@@ -33,7 +30,7 @@ namespace DDD.Util.Upload
         }
 
         /// <summary>
-        /// get or set code
+        /// Gets or sets response code
         /// </summary>
         public string Code
         {
@@ -41,7 +38,7 @@ namespace DDD.Util.Upload
         }
 
         /// <summary>
-        /// get or set upload files
+        /// Gets or sets file results
         /// </summary>
         public List<UploadFileResult> Files
         {
@@ -49,16 +46,18 @@ namespace DDD.Util.Upload
         }
 
         /// <summary>
-        /// empty upload result
+        /// Gets a default empty upload result
         /// </summary>
         public static readonly UploadResult Empty = new UploadResult();
 
         #endregion
 
+        #region Methods
+
         /// <summary>
-        /// combine upload result
+        /// Combine upload result
         /// </summary>
-        /// <param name="results">other upload results</param>
+        /// <param name="results">Other upload results</param>
         /// <returns></returns>
         public UploadResult Combine(params UploadResult[] results)
         {
@@ -82,5 +81,21 @@ namespace DDD.Util.Upload
             }
             return this;
         }
+
+        /// <summary>
+        /// Gets a fail result
+        /// </summary>
+        /// <param name="message">Message</param>
+        /// <returns>upload result</returns>
+        public static UploadResult FailResult(string message = "")
+        {
+            return new UploadResult()
+            {
+                Success = false,
+                ErrorMessage = message
+            };
+        }
+
+        #endregion
     }
 }

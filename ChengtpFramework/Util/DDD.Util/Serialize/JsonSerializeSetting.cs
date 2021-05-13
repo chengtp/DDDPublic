@@ -1,28 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DDD.Util.Serialize
 {
     /// <summary>
-    /// json serialize setting
+    /// Json serialize setting
     /// </summary>
     public class JsonSerializeSetting
     {
         /// <summary>
-        /// get or set 
+        /// Gets or sets whether non-public properties and fields are parsed
         /// </summary>
         public bool ResolveNonPublic
         {
-            get;set;
+            get; set;
         }
 
         /// <summary>
-        /// deserialize type
+        /// Gets or sets the deserialized data type
         /// </summary>
         public Type DeserializeType
         {
-            get;set;
+            get; set;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dapper
+namespace DDD.Util.Dapper
 {
     /// <summary>
     /// Additional state flags that control command behaviour

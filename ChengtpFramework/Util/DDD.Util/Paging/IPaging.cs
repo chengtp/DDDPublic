@@ -1,37 +1,33 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace DDD.Util.Paging
 {
     /// <summary>
-    /// Paging interface
+    /// Paging contract
     /// </summary>
     [JsonObject]
     public interface IPaging<T> : IEnumerable<T>
     {
-        #region Propertys
+        #region Properties
 
         /// <summary>
-        /// Current Page
+        /// Gets the current page
         /// </summary>
         long Page { get; }
 
         /// <summary>
-        /// Page Size
+        /// Gets the page size
         /// </summary>
         int PageSize { get; }
 
         /// <summary>
-        /// Total Page
+        /// Gets the page count
         /// </summary>
         long PageCount { get; }
 
         /// <summary>
-        /// Total Data
+        /// Gets the total count
         /// </summary>
         long TotalCount { get; }
 
@@ -40,11 +36,11 @@ namespace DDD.Util.Paging
         #region Methods
 
         /// <summary>
-        /// Paging Object Convert
+        /// Converts paging data to a paging object of the specified data type
         /// </summary>
-        /// <typeparam name="TT">Target Object Type</typeparam>
-        /// <returns>Target Paging Object</returns>
-        IPaging<TT> ConvertTo<TT>();
+        /// <typeparam name="TTarget">Target object type</typeparam>
+        /// <returns>Return the target paging object</returns>
+        IPaging<TTarget> ConvertTo<TTarget>();
 
         #endregion
     }

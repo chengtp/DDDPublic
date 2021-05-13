@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Dapper
+namespace DDD.Util.Dapper
 {
     public static partial class SqlMapper
     {

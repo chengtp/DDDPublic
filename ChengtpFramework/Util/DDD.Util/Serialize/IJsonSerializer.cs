@@ -1,29 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DDD.Util.Serialize
+﻿namespace DDD.Util.Serialize
 {
     /// <summary>
-    /// JSON Serializer
+    /// JSON serializer contract
     /// </summary>
     public interface IJsonSerializer
     {
         /// <summary>
-        /// serialization an object to a JSON string
+        /// Serialize the data object as a JSON string
         /// </summary>
-        /// <typeparam name="T">data type</typeparam>
-        /// <param name="obj">object</param>
-        /// <param name="jsonSerializeSetting">JsonSerializeSetting</param>
-        /// <returns>json string</returns>
-        string ObjectToJson<T>(T obj, JsonSerializeSetting jsonSerializeSetting);
+        /// <typeparam name="T">Data type</typeparam>
+        /// <param name="data">Data</param>
+        /// <param name="jsonSerializeSetting">Json serialize setting</param>
+        /// <returns>Return the json string</returns>
+        string ObjectToJson<T>(T data, JsonSerializeSetting jsonSerializeSetting);
 
         /// <summary>
-        /// deserialization a JSON string to an object
+        /// Deserialization a JSON string to an object
         /// </summary>
-        /// <param name="json">JSON string</param>
-        /// <param name="jsonSerializeSetting">JsonSerializeSetting</param>
-        /// <returns>object</returns>
+        /// <param name="json">Json string</param>
+        /// <param name="jsonSerializeSetting">Json serialize setting</param>
+        /// <returns>Return object data</returns>
         T JsonToObject<T>(string json, JsonSerializeSetting jsonSerializeSetting);
     }
 }

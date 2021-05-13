@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DDD.Util.Fault;
 
 namespace DDD.Util.ValueType
 {
@@ -12,10 +9,10 @@ namespace DDD.Util.ValueType
     [Serializable]
     public struct Money
     {
-        #region constructor
+        #region Constructor
 
         /// <summary>
-        /// instance a money object
+        /// Initializes a new instance of the DDD.Util.ValueType.Money
         /// </summary>
         /// <param name="amount">amount</param>
         public Money(decimal amount)
@@ -25,7 +22,7 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// instance a money object
+        /// Initializes a new instance of the DDD.Util.ValueType.Money
         /// </summary>
         /// <param name="amount">amount</param>
         /// <param name="currency">currency</param>
@@ -37,29 +34,30 @@ namespace DDD.Util.ValueType
 
         #endregion
 
-        #region fields
+        #region Fields
 
         /// <summary>
-        /// default currency
+        /// Gets the default currency
+        /// default value is Currency.CNY
         /// </summary>
         private static Currency defaultCurrency = Currency.CNY;
 
         #endregion
 
-        #region propertys
+        #region Properties
 
         /// <summary>
-        /// get or set amount
+        /// Gets or sets amount value
         /// </summary>
         public decimal Amount { get; set; }
 
         /// <summary>
-        /// get or set currency
+        /// Gets or sets currency
         /// </summary>
         public Currency Currency { get; }
 
         /// <summary>
-        /// get or set currencysign
+        /// Gets or sets currencysign
         /// </summary>
         public string CurrencySign
         {
@@ -71,36 +69,36 @@ namespace DDD.Util.ValueType
 
         #endregion
 
-        #region static methods
+        #region Static Methods
 
         /// <summary>
-        /// compare two MOney objects whether equal
+        /// Compare two money objects whether is equal
         /// </summary>
-        /// <param name="moneyOne">first money</param>
-        /// <param name="moneyTwo">second money</param>
-        /// <returns>whether equal</returns>
+        /// <param name="moneyOne">First money</param>
+        /// <param name="moneyTwo">Second money</param>
+        /// <returns>Return whether is equal</returns>
         public static bool Equals(Money moneyOne, Money moneyTwo)
         {
             return moneyOne.Currency == moneyTwo.Currency && moneyOne.Amount == moneyTwo.Amount;
         }
 
         /// <summary>
-        /// verify whether can do calculate between two Money objects
+        /// Verify whether can do calculate between two Money objects
         /// </summary>
-        /// <param name="moneyOne">first money</param>
-        /// <param name="moneyTwo">second money</param>
+        /// <param name="moneyOne">First money</param>
+        /// <param name="moneyTwo">Second money</param>
         private static void CalculateVerify(Money moneyOne, Money moneyTwo)
         {
             if (moneyOne.Currency != moneyTwo.Currency)
             {
-                throw new Exception("both Money data don't hava the same Currency");
+                throw new EZNEWException("Both money data don't hava the same currency");
             }
         }
 
         /// <summary>
-        /// set default currency
+        /// Sets default currency
         /// </summary>
-        /// <param name="defaultCurrency">default currency</param>
+        /// <param name="defaultCurrency">Default currency</param>
         public static void SetDefaultCurrency(Currency defaultCurrency)
         {
             Money.defaultCurrency = defaultCurrency;
@@ -108,10 +106,10 @@ namespace DDD.Util.ValueType
 
         #endregion
 
-        #region methods
+        #region Methods
 
         /// <summary>
-        /// get currency sign
+        /// Gets currency sign
         /// </summary>
         /// <returns></returns>
         string GetCurrencySign()
@@ -120,25 +118,30 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// compare two Money objects whether equal
+        /// Compare two money objects whether equal
         /// </summary>
-        /// <param name="obj">other Money object</param>
-        /// <returns>whether equal</returns>
-        public override bool Equals(object obj)
+        /// <param name="data">Other money object</param>
+        /// <returns>Return whether is equal</returns>
+        public override bool Equals(object data)
         {
-            return Equals(this, (Money)obj);
+            return Equals(this, (Money)data);
         }
+
+        /// <summary>
+        /// Gets hash code
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return string.Format("{0}_{1}", Currency, Amount).GetHashCode();
         }
 
         /// <summary>
-        /// do add operation between two Money objects,must be the same currency can do this operation
+        /// Do add operation between two Money objects,must be the same currency can do this operation
         /// </summary>
-        /// <param name="one">first money</param>
-        /// <param name="two">second money</param>
-        /// <returns>calculate result</returns>
+        /// <param name="one">First money</param>
+        /// <param name="two">Second money</param>
+        /// <returns>Return the calculate result</returns>
         public static Money operator +(Money one, Money two)
         {
             CalculateVerify(one, two);
@@ -147,11 +150,11 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// do subtraction operation between two Money objects,must be the same currency can do this operation
+        /// Do subtraction operation between two Money objects,must be the same currency can do this operation
         /// </summary>
-        /// <param name="one">first money</param>
-        /// <param name="two">second money</param>
-        /// <returns>calculate result</returns>
+        /// <param name="one">First money</param>
+        /// <param name="two">Second money</param>
+        /// <returns>Return calculate result</returns>
         public static Money operator -(Money one, Money two)
         {
             CalculateVerify(one, two);
@@ -160,11 +163,11 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// do multiplication operation between two Money objects,must be the same currency can do this operation
+        /// Do multiplication operation between two Money objects,must be the same currency can do this operation
         /// </summary>
-        /// <param name="one">first money</param>
-        /// <param name="two">second money</param>
-        /// <returns>calculate result</returns>
+        /// <param name="one">First money</param>
+        /// <param name="two">Second money</param>
+        /// <returns>Return calculate result</returns>
         public static Money operator *(Money one, Money two)
         {
             CalculateVerify(one, two);
@@ -173,11 +176,11 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// do division operation between two Money objects,must be the same currency can do this operation
+        /// Do division operation between two Money objects,must be the same currency can do this operation
         /// </summary>
-        /// <param name="one">first money</param>
-        /// <param name="two">second money</param>
-        /// <returns>calculate result</returns>
+        /// <param name="one">First money</param>
+        /// <param name="two">Second money</param>
+        /// <returns>Return calculate result</returns>
         public static Money operator /(Money one, Money two)
         {
             CalculateVerify(one, two);
@@ -186,33 +189,33 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// compare two Money objects whether equal
+        /// Compare two Money objects whether equal
         /// </summary>
-        /// <param name="one">first money</param>
-        /// <param name="two">second money</param>
-        /// <returns>whether equal</returns>
+        /// <param name="one">First money</param>
+        /// <param name="two">Second money</param>
+        /// <returns>Whether is equal</returns>
         public static bool operator ==(Money one, Money two)
         {
             return Equals(one, two);
         }
 
         /// <summary>
-        /// compare two Money objects whether not equal
+        /// Compare two Money objects whether not equal
         /// </summary>
-        /// <param name="one">first money</param>
-        /// <param name="two">second money</param>
-        /// <returns>whether not equal</returns>
+        /// <param name="one">First money</param>
+        /// <param name="two">Second money</param>
+        /// <returns>Whether is not equal</returns>
         public static bool operator !=(Money one, Money two)
         {
             return !Equals(one, two);
         }
 
         /// <summary>
-        /// determine whether the first money object less than second
+        /// Determine whether the first money object less than second
         /// </summary>
-        /// <param name="one">first money</param>
-        /// <param name="two">second money</param>
-        /// <returns>determined result</returns>
+        /// <param name="one">First money</param>
+        /// <param name="two">Second money</param>
+        /// <returns>Return determined result</returns>
         public static bool operator <(Money one, Money two)
         {
             CalculateVerify(one, two);
@@ -220,11 +223,11 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// determine whether the first money object greater than second
+        /// Determine whether the first money object greater than second
         /// </summary>
-        /// <param name="one">first money</param>
-        /// <param name="two">second money</param>
-        /// <returns>determined result</returns>
+        /// <param name="one">First money</param>
+        /// <param name="two">Second money</param>
+        /// <returns>Return determined result</returns>
         public static bool operator >(Money one, Money two)
         {
             CalculateVerify(one, two);
@@ -232,11 +235,11 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// determine whether the first money object less than or equal to second
+        /// Determine whether the first money object less than or equal to second
         /// </summary>
-        /// <param name="one">first money</param>
-        /// <param name="two">second money</param>
-        /// <returns>determined result</returns>
+        /// <param name="one">First money</param>
+        /// <param name="two">Second money</param>
+        /// <returns>Return determined result</returns>
         public static bool operator <=(Money one, Money two)
         {
             CalculateVerify(one, two);
@@ -244,11 +247,11 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// determine whether the first money object greater than or equal to second
+        /// Determine whether the first money object greater than or equal to second
         /// </summary>
-        /// <param name="one">first money</param>
-        /// <param name="two">second money</param>
-        /// <returns>determined result</returns>
+        /// <param name="one">First money</param>
+        /// <param name="two">Second money</param>
+        /// <returns>Return determined result</returns>
         public static bool operator >=(Money one, Money two)
         {
             CalculateVerify(one, two);
@@ -256,10 +259,10 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// add amount,minus amount if amount value is a negative number
+        /// Add amount,minus amount if amount value is a negative number
         /// </summary>
-        /// <param name="amount">amount value</param>
-        /// <returns>calculated money</returns>
+        /// <param name="amount">Amount value</param>
+        /// <returns>Return calculated money</returns>
         public Money AddAmount(decimal amount)
         {
             Amount += amount;
@@ -267,10 +270,10 @@ namespace DDD.Util.ValueType
         }
 
         /// <summary>
-        /// minus amount，add amount if amount value is a negative number
+        /// Minus amount，add amount if amount value is a negative number
         /// </summary>
         /// <param name="amount">amount</param>
-        /// <returns>calculated money</returns>
+        /// <returns>Return calculated money</returns>
         public Money SubtractAmount(decimal amount)
         {
             Amount -= amount;
@@ -281,7 +284,7 @@ namespace DDD.Util.ValueType
     }
 
     /// <summary>
-    /// Currency
+    /// Defines currency
     /// </summary>
     [Serializable]
     public enum Currency

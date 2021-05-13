@@ -1,14 +1,19 @@
-﻿using DDD.Util.Paging;
+﻿using System;
+using DDD.Util.Paging;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace DDD.Util.Serialize.Json.JsonNet
 {
-    public class PagingConverter: JsonConverter
+    /// <summary>
+    /// Provides a conversion implementation for DDD.Util.Paging.Paging<> serialization
+    /// </summary>
+    public class PagingConverter : JsonConverter
     {
+        /// <summary>
+        /// Determines whether the specified data type is allowed to be converted
+        /// </summary>
+        /// <param name="objectType">data type</param>
+        /// <returns>allowed to be converted</returns>
         public override bool CanConvert(Type objectType)
         {
             if (!objectType.IsGenericType)
@@ -24,13 +29,27 @@ namespace DDD.Util.Serialize.Json.JsonNet
             return genericType == pagingType || pagingType.IsAssignableFrom(genericType);
         }
 
+        /// <summary>
+        /// Read the data from the JSON data
+        /// </summary>
+        /// <param name="reader">Json reader</param>
+        /// <param name="objectType">Object type</param>
+        /// <param name="existingValue">Existing value</param>
+        /// <param name="serializer">Json serializer</param>
+        /// <returns>Return object data</returns>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             Type genericType = objectType.GetGenericArguments()[0];
-            Type pagingType = typeof(Paging<>).MakeGenericType(genericType);
+            Type pagingType = typeof(DefaultPaging<>).MakeGenericType(genericType);
             return serializer.Deserialize(reader, pagingType);
         }
 
+        /// <summary>
+        /// Write the object data to JSON
+        /// </summary>
+        /// <param name="writer">Json writer</param>
+        /// <param name="value">object value</param>
+        /// <param name="serializer">Json serializer</param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             serializer.Serialize(writer, value);
